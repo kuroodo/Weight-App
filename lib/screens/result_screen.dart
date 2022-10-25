@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/helpers/simulator.dart';
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
@@ -47,7 +48,7 @@ class _ResultScreenState extends State<ResultScreen> {
     return Scaffold(
       appBar: ResultAppBar(
         onQuestionTapped: () => Navigator.of(context)
-            .pushNamed("result_info_screen", arguments: params),
+            .pushNamed(routes.resultInfoScreen, arguments: params),
       ),
       body: FutureBuilder(
         future: calculateData(
