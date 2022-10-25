@@ -2,6 +2,7 @@ Flutter project to help aid in tracking weight loss, and understanding weight lo
 
 This project uses the Mifflin-St Jeor equation to calculate BMR
 
+Project is still a WIP
 
 # Requirements
 
