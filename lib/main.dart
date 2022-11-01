@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/screens/home_screen.dart';
 import 'package:weight_app/screens/result_info_screen.dart';
@@ -19,6 +20,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.blue,
+      ),
+      builder: (context, child) => ResponsiveWrapper.builder(
+        child,
+        maxWidth: 1000,
+        minWidth: 480,
+        defaultScale: true,
+        breakpoints: const [
+          ResponsiveBreakpoint.resize(480, name: MOBILE),
+          ResponsiveBreakpoint.autoScale(800, name: TABLET),
+          ResponsiveBreakpoint.resize(1000, name: DESKTOP),
+        ],
+        background: Container(color: Theme.of(context).canvasColor),
       ),
       routes: {
         routes.homeScreen: (context) => const HomeScreen(),
