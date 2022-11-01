@@ -18,15 +18,15 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  List<ResultData>? data;
+  List<ResultData>? _data;
 
-  Future<List<ResultData>> calculateData({
+  Future<List<ResultData>> _calculateData({
     required WeightData startingWeight,
     required Activity activity,
     required double calorieIntake,
   }) {
-    if (data != null) {
-      return Future.value(data);
+    if (_data != null) {
+      return Future.value(_data);
     }
     return Future.value(
       Simulator.simulateTwoYears(
@@ -50,23 +50,23 @@ class _ResultScreenState extends State<ResultScreen> {
             .pushNamed(routes.resultInfoScreen, arguments: params),
       ),
       body: FutureBuilder(
-        future: calculateData(
+        future: _calculateData(
           startingWeight: weightData,
           activity: activity,
           calorieIntake: params.calorieIntake,
         ),
         builder: (context, snapshot) {
-          if (data == null &&
+          if (_data == null &&
               snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (data == null && snapshot.hasData) {
-            data = snapshot.data;
+          if (_data == null && snapshot.hasData) {
+            _data = snapshot.data;
           }
 
-          return ResultChart(
-            data: data!,
+          return _ResultChart(
+            data: _data!,
             weightMeasurement: params.weightMeasurement,
           );
         },
@@ -76,11 +76,10 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 }
 
-class ResultChart extends StatelessWidget {
+class _ResultChart extends StatelessWidget {
   final List<ResultData> data;
   final Measurement weightMeasurement;
-  const ResultChart({
-    super.key,
+  const _ResultChart({
     required this.data,
     required this.weightMeasurement,
   });
@@ -190,38 +189,39 @@ class ResultChart extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                          flex: 3,
-                          child: Row(
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  weight.toStringAsFixed(2),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.yellow),
-                                ),
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                weight.toStringAsFixed(2),
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.yellow),
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  data[index].calsUsed.toStringAsFixed(2),
-                                  textAlign: TextAlign.center,
-                                  style: dataStyle,
-                                ),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                data[index].calsUsed.toStringAsFixed(2),
+                                textAlign: TextAlign.center,
+                                style: dataStyle,
                               ),
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  data[index].deficit.toStringAsFixed(2),
-                                  textAlign: TextAlign.center,
-                                  style: dataStyle,
-                                ),
-                              )
-                            ],
-                          ))
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                data[index].deficit.toStringAsFixed(2),
+                                textAlign: TextAlign.center,
+                                style: dataStyle,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

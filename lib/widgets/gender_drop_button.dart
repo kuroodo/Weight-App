@@ -10,14 +10,14 @@ class GenderDropButton extends StatefulWidget {
 }
 
 class _GenderDropButtonState extends State<GenderDropButton> {
-  Gender dropdownValue = Gender.male;
+  Gender _dropdownValue = Gender.male;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Colors.grey[350]),
       child: DropdownButton<Gender>(
-        value: dropdownValue,
+        value: _dropdownValue,
         //alignment: Alignment.center,
         dropdownColor: Colors.grey[350],
         isExpanded: true,
@@ -48,7 +48,7 @@ class _GenderDropButtonState extends State<GenderDropButton> {
         ).toList(),
         onChanged: (Gender? value) {
           setState(() {
-            dropdownValue = value!;
+            _dropdownValue = value!;
           });
           widget.onChanged(value!);
         },

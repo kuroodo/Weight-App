@@ -38,7 +38,7 @@ class _CalcFormState extends State<CalcForm> {
           // Gender
           Row(
             children: [
-              const ConstrainedText(text: "Select Gender"),
+              const _ConstrainedText(text: "Select Gender"),
               Expanded(
                 flex: 1,
                 child: GenderDropButton(
@@ -50,34 +50,34 @@ class _CalcFormState extends State<CalcForm> {
           ),
           const SizedBox(height: spacing),
 
-          FormRow(
+          _FormRow(
             label: "Weight",
             keyName: "w",
             isWeight: true,
             onSave: (w) => _weight = double.parse(w),
-            onValidate: validateDouble,
+            onValidate: _validateDouble,
             onDropDownChange: (val) => _weightMeasure = val,
           ),
           const SizedBox(height: spacing),
-          FormRow(
+          _FormRow(
             label: "Height",
             keyName: "h",
             isWeight: false,
             onSave: (h) => _height = double.parse(h),
-            onValidate: validateDouble,
+            onValidate: _validateDouble,
             onDropDownChange: (val) => _heightMeasure = val,
           ),
           const SizedBox(height: spacing),
 
           Row(
             children: [
-              const ConstrainedText(text: "Age"),
+              const _ConstrainedText(text: "Age"),
               Expanded(
                 child: StyledFormField(
                   keyName: "a",
                   keyBoardType: TextInputType.number,
                   onSave: (age) => _age = int.parse(age),
-                  onValidate: validateInt,
+                  onValidate: _validateInt,
                 ),
               ),
               const Expanded(flex: 2, child: SizedBox.shrink())
@@ -87,13 +87,13 @@ class _CalcFormState extends State<CalcForm> {
 
           Row(
             children: [
-              const ConstrainedText(text: "Calories To Eat Per Day"),
+              const _ConstrainedText(text: "Calories To Eat Per Day"),
               Expanded(
                 child: StyledFormField(
                   keyName: "c",
                   keyBoardType: TextInputType.number,
                   onSave: (cals) => _cals = double.parse(cals),
-                  onValidate: validateInt,
+                  onValidate: _validateInt,
                 ),
               ),
             ],
@@ -102,7 +102,7 @@ class _CalcFormState extends State<CalcForm> {
 
           Row(
             children: [
-              const ConstrainedText(text: "How active are you?"),
+              const _ConstrainedText(text: "How active are you?"),
               Expanded(
                 child: ActivityDropButton(
                   onChanged: (activity) => _activity = activity,
@@ -159,18 +159,16 @@ class _CalcFormState extends State<CalcForm> {
         weightMeasurement: _weightMeasure,
       ),
     );
-    // Create WeightData
-    // Navigate to next screen
   }
 
-  String? validateDouble(val) {
+  String? _validateDouble(val) {
     if (val == null || double.tryParse(val) == null) {
       return "Please enter a valid number";
     }
     return null;
   }
 
-  String? validateInt(val) {
+  String? _validateInt(val) {
     if (val == null || int.tryParse(val) == null) {
       return "Please enter a valid number";
     }
@@ -178,30 +176,27 @@ class _CalcFormState extends State<CalcForm> {
   }
 }
 
-class FormRow extends StatelessWidget {
+class _FormRow extends StatelessWidget {
   final String label;
   final String keyName;
   final bool isWeight;
-  final TextInputType? keyBoardType;
   final Function(Measurement) onDropDownChange;
   final Function(String) onSave;
   final String? Function(String?) onValidate;
-  const FormRow({
-    super.key,
+  const _FormRow({
     required this.label,
     required this.keyName,
     required this.isWeight,
     required this.onSave,
     required this.onValidate,
     required this.onDropDownChange,
-    this.keyBoardType,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        ConstrainedText(text: label),
+        _ConstrainedText(text: label),
         Expanded(
           flex: 3,
           child: StyledFormField(
@@ -226,9 +221,9 @@ class FormRow extends StatelessWidget {
   }
 }
 
-class ConstrainedText extends StatelessWidget {
+class _ConstrainedText extends StatelessWidget {
   final String text;
-  const ConstrainedText({super.key, required this.text});
+  const _ConstrainedText({required this.text});
 
   @override
   Widget build(BuildContext context) {
