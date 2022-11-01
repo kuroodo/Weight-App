@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/screens/home_screen.dart';
 import 'package:weight_app/screens/result_info_screen.dart';
 import 'package:weight_app/screens/result_screen.dart';
@@ -20,11 +21,11 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: {
-        "home_screen": (context) => const HomeScreen(),
-        "result_screen": (context) => const ResultScreen(),
-        "result_info_screen": (context) => const ResultInfoScreen(),
+        routes.homeScreen: (context) => const HomeScreen(),
+        routes.resultScreen: (context) => const ResultScreen(),
+        routes.resultInfoScreen: (context) => const ResultInfoScreen(),
       },
-      initialRoute: "home_screen",
+      initialRoute: routes.homeScreen,
     );
   }
 }

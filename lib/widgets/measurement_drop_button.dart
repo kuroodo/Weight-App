@@ -5,15 +5,18 @@ import 'package:weight_app/helpers/constants.dart';
 class MeasurementDropButton extends StatefulWidget {
   final bool isWeight;
   final Function(Measurement) onChanged;
-  const MeasurementDropButton(
-      {super.key, required this.isWeight, required this.onChanged});
+  const MeasurementDropButton({
+    super.key,
+    required this.isWeight,
+    required this.onChanged,
+  });
 
   @override
   State<MeasurementDropButton> createState() => _MeasurementDropButtonState();
 }
 
 class _MeasurementDropButtonState extends State<MeasurementDropButton> {
-  Measurement dropdownValue = Measurement.imperial;
+  Measurement _dropdownValue = Measurement.imperial;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,7 @@ class _MeasurementDropButtonState extends State<MeasurementDropButton> {
       decoration: BoxDecoration(color: Colors.grey[350]),
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: DropdownButton2<Measurement>(
-        value: dropdownValue,
+        value: _dropdownValue,
         alignment: Alignment.centerRight,
         dropdownDecoration: BoxDecoration(color: Colors.grey[350]),
         dropdownWidth: 80,
@@ -54,7 +57,7 @@ class _MeasurementDropButtonState extends State<MeasurementDropButton> {
         ).toList(),
         onChanged: (Measurement? value) {
           setState(() {
-            dropdownValue = value!;
+            _dropdownValue = value!;
           });
           widget.onChanged(value!);
         },

@@ -11,7 +11,7 @@ class ActivityDropButton extends StatefulWidget {
 }
 
 class _ActivityDropButtonState extends State<ActivityDropButton> {
-  Activity dropdownValue = Activity.lightExercise;
+  Activity _dropdownValue = Activity.lightExercise;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class _ActivityDropButtonState extends State<ActivityDropButton> {
       decoration: BoxDecoration(color: Colors.grey[350]),
       child: DropdownButton2<Activity>(
         isExpanded: true,
-        value: dropdownValue,
+        value: _dropdownValue,
         alignment: Alignment.center,
         dropdownDecoration: BoxDecoration(color: Colors.grey[350]),
         icon: const Icon(
@@ -54,7 +54,7 @@ class _ActivityDropButtonState extends State<ActivityDropButton> {
         ).toList(),
         onChanged: (Activity? value) {
           setState(() {
-            dropdownValue = value!;
+            _dropdownValue = value!;
           });
           widget.onChanged(value!);
         },

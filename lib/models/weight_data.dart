@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/converter.dart' as converter;
 
 // BMR is calories burn per day for just existing
 // BMR * activity points is calories burned per day
@@ -41,7 +41,7 @@ class WeightData {
   }
 
   double get bmi {
-    return weight / pow(Converter.cmtoMeter(height), 2);
+    return weight / pow(converter.cmtoMeter(height), 2);
   }
 
   double get idealBmi {
@@ -54,7 +54,7 @@ class WeightData {
 
   double get idealWeight {
     return 2.2 * idealBmi +
-        (3.5 * idealBmi) * (Converter.cmtoMeter(height) - 1.5);
+        (3.5 * idealBmi) * (converter.cmtoMeter(height) - 1.5);
   }
 
   double getCalorieRate(Activity activity) {

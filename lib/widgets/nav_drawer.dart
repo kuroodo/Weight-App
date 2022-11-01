@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:weight_app/helpers/routes.dart' as routes;
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -11,7 +12,7 @@ class NavDrawer extends StatelessWidget {
         padding: const EdgeInsets.all(0),
         children: [
           SizedBox(
-            height: 100,
+            height: 120,
             child: DrawerHeader(
               decoration: BoxDecoration(
                 color: Colors.grey[300],
@@ -25,7 +26,7 @@ class NavDrawer extends StatelessWidget {
           ),
           TextButton.icon(
             onPressed: () => Navigator.of(context)
-                .pushNamedAndRemoveUntil("home_screen", (route) => false),
+                .pushNamedAndRemoveUntil(routes.homeScreen, (route) => false),
             icon: const Icon(Icons.home),
             label: const Text(
               "Home",

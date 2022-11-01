@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/weight_data.dart';
 
@@ -30,9 +30,9 @@ class ResultInfoScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(getDataText(data), style: textStyle),
+                      Text(_getDataText(data), style: textStyle),
                       const SizedBox(height: 5),
-                      Text(getBMIText(data), style: textStyle),
+                      Text(_getBMIText(data), style: textStyle),
                     ],
                   ),
                 ),
@@ -42,11 +42,11 @@ class ResultInfoScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(getBMIRangeText(), style: textStyle),
+                      Text(_getBMIRangeText(), style: textStyle),
                       const SizedBox(height: 5),
-                      Text(getIdealWeightText(data), style: textStyle),
+                      Text(_getIdealWeightText(data), style: textStyle),
                       const SizedBox(height: 25),
-                      Text(getIdealWeightInfoText(), style: textStyle)
+                      Text(_getIdealWeightInfoText(), style: textStyle)
                     ],
                   ),
                 ),
@@ -57,10 +57,10 @@ class ResultInfoScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(getResultInfoText(), style: textStyle),
+                      Text(_getResultInfoText(), style: textStyle),
                       const SizedBox(height: 5),
                       Text(
-                        getMoreInfoText(),
+                        _getMoreInfoText(),
                         style: textStyle,
                       ),
                     ],
@@ -74,48 +74,48 @@ class ResultInfoScreen extends StatelessWidget {
     );
   }
 
-  String getDataText(CalcParams data) {
+  String _getDataText(CalcParams data) {
     String gender = data.weightData.isMale ? "male" : "female";
     String weightMeasurement = data.weightMeasurement.weightText;
-    String weight = getWeight(data.weightData.weight, data.weightMeasurement);
+    String weight = _getWeight(data.weightData.weight, data.weightMeasurement);
     String heightMeasurement = data.heightMeasurement.heightText;
-    String height = getHeight(data.weightData.height, data.heightMeasurement);
+    String height = _getHeight(data.weightData.height, data.heightMeasurement);
 
     return "You are a $height$heightMeasurement tall $gender who weighs $weight $weightMeasurement who intends to eat around ${data.calorieIntake} calories each day.";
   }
 
-  String getBMIText(CalcParams data) {
-    String weightStatus = getWeightStatusText(data.weightData);
-    getWeight(data.weightData.idealWeight, data.weightMeasurement);
+  String _getBMIText(CalcParams data) {
+    String weightStatus = _getWeightStatusText(data.weightData);
+    _getWeight(data.weightData.idealWeight, data.weightMeasurement);
 
     return "Your current BMI is ${data.weightData.bmi.toStringAsFixed(2)} which means you are $weightStatus.";
   }
 
-  String getBMIRangeText() {
+  String _getBMIRangeText() {
     return "A healthy BMI range is between 18.5 and 24.9.";
   }
 
-  String getIdealWeightText(CalcParams data) {
+  String _getIdealWeightText(CalcParams data) {
     String weightMeasurement = data.weightMeasurement.weightText;
     String idealWeight =
-        getWeight(data.weightData.idealWeight, data.weightMeasurement);
+        _getWeight(data.weightData.idealWeight, data.weightMeasurement);
 
     return "For a person of your age, height, and gender, your ideal weight should be around $idealWeight $weightMeasurement.";
   }
 
-  String getIdealWeightInfoText() {
+  String _getIdealWeightInfoText() {
     return "Note that the ideal weight and BMI may vary per individual. Factors such as muscle mass, muscle to fat ratio, skeletal structure and more are not measured by this application.";
   }
 
-  String getResultInfoText() {
+  String _getResultInfoText() {
     return "The data on the results screen shows an estimated projection of your weight based on your activity and calorie intake.";
   }
 
-  String getMoreInfoText() {
+  String _getMoreInfoText() {
     return "For more information, return to the results screen, open the side menu, and select Weight Lost Tips";
   }
 
-  String getWeightStatusText(WeightData weightData) {
+  String _getWeightStatusText(WeightData weightData) {
     String weightStatus;
 
     if (weightData.bmi < 18.5) {
@@ -129,17 +129,17 @@ class ResultInfoScreen extends StatelessWidget {
     return weightStatus;
   }
 
-  String getWeight(double weight, Measurement weightMeasurement) {
+  String _getWeight(double weight, Measurement weightMeasurement) {
     if (weightMeasurement == Measurement.imperial) {
-      return Converter.kgToPound(weight).toStringAsFixed(2);
+      return converter.kgToPound(weight).toStringAsFixed(2);
     } else {
       return weight.toStringAsFixed(2);
     }
   }
 
-  String getHeight(double height, Measurement heightMeasurement) {
+  String _getHeight(double height, Measurement heightMeasurement) {
     if (heightMeasurement == Measurement.imperial) {
-      return Converter.cmToInch(height).toStringAsFixed(2);
+      return converter.cmToInch(height).toStringAsFixed(2);
     } else {
       return height.toStringAsFixed(2);
     }
