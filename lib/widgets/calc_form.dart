@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/weight_data.dart';
 import 'package:weight_app/widgets/activity_drop_button.dart';
@@ -139,10 +139,10 @@ class _CalcFormState extends State<CalcForm> {
 
   void _onSubmit() {
     final double weight = _weightMeasure == Measurement.imperial
-        ? Converter.poundToKg(_weight)
+        ? converter.poundToKg(_weight)
         : _weight;
     final double height = _heightMeasure == Measurement.imperial
-        ? Converter.inchToCm(_height)
+        ? converter.inchToCm(_height)
         : _height;
     Navigator.of(context).popAndPushNamed(
       "result_screen",

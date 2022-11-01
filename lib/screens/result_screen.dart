@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/helpers/routes.dart' as routes;
-import 'package:weight_app/helpers/simulator.dart';
+import 'package:weight_app/helpers/simulator.dart' as simulator;
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
 import 'package:weight_app/models/weight_data.dart';
@@ -29,7 +29,7 @@ class _ResultScreenState extends State<ResultScreen> {
       return Future.value(_data);
     }
     return Future.value(
-      Simulator.simulateTwoYears(
+      simulator.simulateTwoYears(
         startingWeight: startingWeight,
         activity: activity,
         calorieIntake: calorieIntake,
@@ -156,7 +156,7 @@ class _ResultChart extends StatelessWidget {
           child: ListView.builder(
             itemBuilder: (context, index) {
               double weight = weightMeasurement == Measurement.imperial
-                  ? Converter.kgToPound(data[index].weight)
+                  ? converter.kgToPound(data[index].weight)
                   : data[index].weight;
               String date = DateFormat("MM/dd/yyyy").format(data[index].date);
 

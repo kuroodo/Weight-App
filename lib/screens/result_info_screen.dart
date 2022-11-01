@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart';
+import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/weight_data.dart';
 
@@ -131,7 +131,7 @@ class ResultInfoScreen extends StatelessWidget {
 
   String _getWeight(double weight, Measurement weightMeasurement) {
     if (weightMeasurement == Measurement.imperial) {
-      return Converter.kgToPound(weight).toStringAsFixed(2);
+      return converter.kgToPound(weight).toStringAsFixed(2);
     } else {
       return weight.toStringAsFixed(2);
     }
@@ -139,7 +139,7 @@ class ResultInfoScreen extends StatelessWidget {
 
   String _getHeight(double height, Measurement heightMeasurement) {
     if (heightMeasurement == Measurement.imperial) {
-      return Converter.cmToInch(height).toStringAsFixed(2);
+      return converter.cmToInch(height).toStringAsFixed(2);
     } else {
       return height.toStringAsFixed(2);
     }
