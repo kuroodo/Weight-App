@@ -154,6 +154,7 @@ class _ResultChart extends StatelessWidget {
         ),
         Expanded(
           child: ListView.builder(
+            itemCount: data.length,
             itemBuilder: (context, index) {
               double weight = weightMeasurement == Measurement.imperial
                   ? converter.kgToPound(data[index].weight)
