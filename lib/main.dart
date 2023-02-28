@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:desktop_window/desktop_window.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:weight_app/helpers/routes.dart' as routes;
@@ -5,7 +9,11 @@ import 'package:weight_app/screens/home_screen.dart';
 import 'package:weight_app/screens/result_info_screen.dart';
 import 'package:weight_app/screens/result_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (!kIsWeb && (Platform.isMacOS || Platform.isLinux || Platform.isWindows)) {
+    await DesktopWindow.setMinWindowSize(const Size(600, 700));
+  }
   runApp(const MyApp());
 }
 
@@ -23,8 +31,6 @@ class MyApp extends StatelessWidget {
       ),
       builder: (context, child) => ResponsiveWrapper.builder(
         child,
-        maxWidth: 1000,
-        minWidth: 480,
         defaultScale: true,
         breakpoints: const [
           ResponsiveBreakpoint.resize(480, name: MOBILE),
