@@ -26,13 +26,20 @@ class _MeasurementDropButtonState extends State<MeasurementDropButton> {
       child: DropdownButton2<Measurement>(
         value: _dropdownValue,
         alignment: Alignment.centerRight,
-        dropdownDecoration: BoxDecoration(color: Colors.grey[350]),
-        dropdownWidth: 80,
-        isExpanded: true,
-        icon: const Icon(
-          Icons.arrow_drop_down,
-          color: Colors.black,
+        dropdownStyleData: DropdownStyleData(
+          decoration: BoxDecoration(color: Colors.grey[350]),
+          width: 80,
         ),
+        buttonStyleData: const ButtonStyleData(
+          width: 80,
+        ),
+        iconStyleData: const IconStyleData(
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: Colors.black,
+          ),
+        ),
+        isExpanded: true,
         style: const TextStyle(color: Colors.black, fontSize: 18),
         selectedItemBuilder: (context) {
           return Measurement.values

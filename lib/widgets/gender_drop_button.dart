@@ -18,9 +18,7 @@ class _GenderDropButtonState extends State<GenderDropButton> {
       decoration: BoxDecoration(color: Colors.grey[350]),
       child: DropdownButton<Gender>(
         value: _dropdownValue,
-        //alignment: Alignment.center,
         dropdownColor: Colors.grey[350],
-        isExpanded: true,
         icon: const Icon(
           Icons.arrow_drop_down,
           color: Colors.black,

@@ -8,6 +8,8 @@ import 'package:weight_app/widgets/calc_form/styled_form_field.dart';
 import 'package:weight_app/widgets/gender_drop_button.dart';
 import 'package:weight_app/widgets/measurement_drop_button.dart';
 
+const double _formWidth = 150;
+
 class CalcForm extends StatefulWidget {
   const CalcForm({super.key});
 
@@ -28,7 +30,7 @@ class _CalcFormState extends State<CalcForm> {
 
   @override
   Widget build(BuildContext context) {
-    const double spacing = 14;
+    const double columnSpacing = 14;
     return Form(
       key: _formKey,
       child: Column(
@@ -38,17 +40,13 @@ class _CalcFormState extends State<CalcForm> {
           // Gender
           Row(
             children: [
-              const _ConstrainedText(text: "Select Gender"),
-              Expanded(
-                flex: 1,
-                child: GenderDropButton(
-                  onChanged: (gender) => _gender = gender,
-                ),
+              const _ConstrainedText(text: "Gender"),
+              GenderDropButton(
+                onChanged: (gender) => _gender = gender,
               ),
-              const Expanded(flex: 2, child: SizedBox.shrink()),
             ],
           ),
-          const SizedBox(height: spacing),
+          const SizedBox(height: columnSpacing),
 
           _FormRow(
             label: "Weight",
@@ -58,7 +56,7 @@ class _CalcFormState extends State<CalcForm> {
             onValidate: _validateDouble,
             onDropDownChange: (val) => _weightMeasure = val,
           ),
-          const SizedBox(height: spacing),
+          const SizedBox(height: columnSpacing),
           _FormRow(
             label: "Height",
             keyName: "h",
@@ -67,50 +65,60 @@ class _CalcFormState extends State<CalcForm> {
             onValidate: _validateDouble,
             onDropDownChange: (val) => _heightMeasure = val,
           ),
-          const SizedBox(height: spacing),
+          const SizedBox(height: columnSpacing),
 
           Row(
             children: [
               const _ConstrainedText(text: "Age"),
-              Expanded(
-                child: StyledFormField(
-                  keyName: "a",
-                  keyBoardType: TextInputType.number,
-                  onSave: (age) => _age = int.parse(age),
-                  onValidate: _validateInt,
+              Flexible(
+                fit: FlexFit.loose,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: _formWidth),
+                  child: StyledFormField(
+                    keyName: "a",
+                    keyBoardType: TextInputType.number,
+                    onSave: (age) => _age = int.parse(age),
+                    onValidate: _validateInt,
+                  ),
                 ),
               ),
-              const Expanded(flex: 2, child: SizedBox.shrink())
             ],
           ),
-          const SizedBox(height: spacing + 14),
+          const SizedBox(height: columnSpacing),
 
           Row(
             children: [
               const _ConstrainedText(text: "Calories To Eat Per Day"),
-              Expanded(
-                child: StyledFormField(
-                  keyName: "c",
-                  keyBoardType: TextInputType.number,
-                  onSave: (cals) => _cals = double.parse(cals),
-                  onValidate: _validateInt,
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: _formWidth),
+                  child: StyledFormField(
+                    keyName: "c",
+                    keyBoardType: TextInputType.number,
+                    onSave: (cals) => _cals = double.parse(cals),
+                    onValidate: _validateInt,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: spacing),
+          const SizedBox(height: columnSpacing),
 
           Row(
             children: [
               const _ConstrainedText(text: "How active are you?"),
-              Expanded(
-                child: ActivityDropButton(
-                  onChanged: (activity) => _activity = activity,
+              Flexible(
+                fit: FlexFit.loose,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 325),
+                  child: ActivityDropButton(
+                    onChanged: (activity) => _activity = activity,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: spacing * 2),
+          const SizedBox(height: columnSpacing * 2),
 
           // Submit
           ElevatedButton(
@@ -197,23 +205,24 @@ class _FormRow extends StatelessWidget {
     return Row(
       children: [
         _ConstrainedText(text: label),
-        Expanded(
-          flex: 3,
-          child: StyledFormField(
-            keyName: keyName,
-            keyBoardType: TextInputType.number,
-            onSave: onSave,
-            onValidate: onValidate,
+        Flexible(
+          fit: FlexFit.loose,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _formWidth),
+            child: StyledFormField(
+              keyName: keyName,
+              keyBoardType: TextInputType.number,
+              onSave: onSave,
+              onValidate: onValidate,
+            ),
           ),
         ),
-        Expanded(
-          flex: 2,
-          child: FractionallySizedBox(
-            widthFactor: .7,
-            child: MeasurementDropButton(
-              onChanged: onDropDownChange,
-              isWeight: isWeight,
-            ),
+        const SizedBox(width: 16),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 100),
+          child: MeasurementDropButton(
+            onChanged: onDropDownChange,
+            isWeight: isWeight,
           ),
         ),
       ],

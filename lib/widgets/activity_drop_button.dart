@@ -21,10 +21,17 @@ class _ActivityDropButtonState extends State<ActivityDropButton> {
         isExpanded: true,
         value: _dropdownValue,
         alignment: Alignment.center,
-        dropdownDecoration: BoxDecoration(color: Colors.grey[350]),
-        icon: const Icon(
-          Icons.arrow_drop_down,
-          color: Colors.black,
+        dropdownStyleData: DropdownStyleData(
+            decoration: BoxDecoration(color: Colors.grey[350]),
+            padding: const EdgeInsets.symmetric(horizontal: 4)),
+        menuItemStyleData: const MenuItemStyleData(
+          height: 75,
+        ),
+        iconStyleData: const IconStyleData(
+          icon: Icon(
+            Icons.arrow_drop_down,
+            color: Colors.black,
+          ),
         ),
         style: const TextStyle(color: Colors.black, fontSize: 18),
         selectedItemBuilder: (context) {
@@ -34,7 +41,7 @@ class _ActivityDropButtonState extends State<ActivityDropButton> {
                     child: Text(
                       value.text,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 18),
                     ),
                   ))
               .toList();
@@ -45,9 +52,7 @@ class _ActivityDropButtonState extends State<ActivityDropButton> {
               value: value,
               child: Text(
                 value.text,
-                style: const TextStyle(
-                  fontSize: 14,
-                ),
+                style: const TextStyle(fontSize: 18),
               ),
             );
           },
