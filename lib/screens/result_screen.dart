@@ -7,7 +7,7 @@ import 'package:weight_app/helpers/simulator.dart' as simulator;
 import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
 import 'package:weight_app/models/weight_data.dart';
-import 'package:weight_app/widgets/nav_drawer.dart';
+import 'package:weight_app/widgets/navigation/nav_drawer.dart';
 import 'package:weight_app/widgets/result_screen/result_app_bar.dart';
 
 class ResultScreen extends StatefulWidget {

@@ -1,62 +1,37 @@
-import 'package:flutter/material.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:weight_app/widgets/calc_form.dart';
-import 'package:weight_app/widgets/desktop/header.dart';
-import 'package:weight_app/widgets/nav_drawer.dart';
+import 'dart:io';
 
-const _title = "Home";
+import 'package:flutter/material.dart';
+import 'package:weight_app/widgets/calc_form.dart';
+import 'package:weight_app/widgets/navigation/nav_drawer.dart';
+import 'package:weight_app/widgets/navigation/side_navigator.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    bool useMobile = ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
+    bool useMobile = Platform.isAndroid || Platform.isIOS;
     return Scaffold(
       appBar: useMobile
-          ? AppBar(title: const Text(_title), centerTitle: true)
+          ? AppBar(title: const Text("Home"), centerTitle: true)
           : null,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: useMobile ? const MobileHome() : const DesktopHome(),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!useMobile) const SideNavigator(),
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(14),
+                child: SingleChildScrollView(
+                  child: CalcForm(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
       drawer: useMobile ? const NavDrawer() : null,
-    );
-  }
-}
-
-class MobileHome extends StatelessWidget {
-  const MobileHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: SingleChildScrollView(
-        child: CalcForm(),
-      ),
-    );
-  }
-}
-
-class DesktopHome extends StatelessWidget {
-  const DesktopHome({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Header(
-            label: _title,
-            onPressed: () {},
-          ),
-          const SizedBox(height: 50),
-          const CalcForm(),
-        ],
-      ),
     );
   }
 }
