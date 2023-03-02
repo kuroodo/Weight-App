@@ -9,7 +9,7 @@ class SideNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool showTitle = !ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
-    List<SideMenuItemDataTile> _items = [
+    List<SideMenuItemDataTile> items = [
       buildDataTile(
         title: 'Home',
         onTap: () {
@@ -54,7 +54,7 @@ class SideNavigator extends StatelessWidget {
                 )
               : null,
         ),
-        items: _items,
+        items: items,
         footer: const _Footer(),
       ),
       backgroundColor: Theme.of(context).cardColor.withAlpha(100),
