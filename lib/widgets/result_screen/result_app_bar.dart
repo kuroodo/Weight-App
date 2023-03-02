@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 
 class ResultAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback onQuestionTapped;
-  const ResultAppBar({super.key, required this.onQuestionTapped});
+  final double height;
+  const ResultAppBar(
+      {super.key, required this.onQuestionTapped, this.height = 56});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: const Text("Results"),
       centerTitle: true,
+      toolbarHeight: height,
       actions: [
         Padding(
           padding: const EdgeInsets.all(8),
@@ -18,9 +21,9 @@ class ResultAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: InkWell(
                 // Splash color
                 onTap: onQuestionTapped,
-                child: const SizedBox(
-                  width: 42,
-                  child: Icon(
+                child: SizedBox(
+                  width: height * .75,
+                  child: const Icon(
                     Icons.question_mark_rounded,
                     size: 26,
                     color: Colors.white,

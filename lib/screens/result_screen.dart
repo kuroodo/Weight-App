@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
@@ -8,6 +10,7 @@ import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
 import 'package:weight_app/models/weight_data.dart';
 import 'package:weight_app/widgets/navigation/nav_drawer.dart';
+import 'package:weight_app/widgets/navigation/side_navigator.dart';
 import 'package:weight_app/widgets/result_screen/result_app_bar.dart';
 
 class ResultScreen extends StatefulWidget {
@@ -39,39 +42,55 @@ class _ResultScreenState extends State<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool useMobile = Platform.isAndroid || Platform.isIOS;
+
     CalcParams params =
         ModalRoute.of(context)!.settings.arguments as CalcParams;
     WeightData weightData = params.weightData;
     Activity activity = params.activity;
 
     return Scaffold(
-      appBar: ResultAppBar(
-        onQuestionTapped: () => Navigator.of(context)
-            .pushNamed(routes.resultInfoScreen, arguments: params),
-      ),
-      body: FutureBuilder(
-        future: _calculateData(
-          startingWeight: weightData,
-          activity: activity,
-          calorieIntake: params.calorieIntake,
-        ),
-        builder: (context, snapshot) {
-          if (_data == null &&
-              snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body: Row(
+        children: [
+          if (!useMobile) const SideNavigator(),
+          Expanded(
+            child: Column(
+              children: [
+                ResultAppBar(
+                  height: 45,
+                  onQuestionTapped: () => Navigator.of(context)
+                      .pushNamed(routes.resultInfoScreen, arguments: params),
+                ),
+                Expanded(
+                  child: FutureBuilder(
+                    future: _calculateData(
+                      startingWeight: weightData,
+                      activity: activity,
+                      calorieIntake: params.calorieIntake,
+                    ),
+                    builder: (context, snapshot) {
+                      if (_data == null &&
+                          snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-          if (_data == null && snapshot.hasData) {
-            _data = snapshot.data;
-          }
+                      if (_data == null && snapshot.hasData) {
+                        _data = snapshot.data;
+                      }
 
-          return _ResultChart(
-            data: _data!,
-            weightMeasurement: params.weightMeasurement,
-          );
-        },
+                      return _ResultChart(
+                        data: _data!,
+                        weightMeasurement: params.weightMeasurement,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      drawer: const NavDrawer(),
+      drawer: useMobile ? const NavDrawer() : null,
     );
   }
 }
