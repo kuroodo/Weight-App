@@ -1,85 +1,87 @@
-import 'package:easy_sidemenu/easy_sidemenu.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_side_menu/flutter_side_menu.dart';
+import 'package:responsive_framework/responsive_framework.dart';
+import 'package:weight_app/helpers/routes.dart' as routes;
 
-class SideNavigator extends StatefulWidget {
+class SideNavigator extends StatelessWidget {
   const SideNavigator({super.key});
 
   @override
-  State<SideNavigator> createState() => _SideNavigatorState();
-}
-
-class _SideNavigatorState extends State<SideNavigator> {
-  final SideMenuController page = SideMenuController();
-
-  late final List<SideMenuItem> items;
-  @override
-  void initState() {
-    super.initState();
-
-    items = [
-      SideMenuItem(
-        // Priority of item to show on SideMenu, lower value is displayed at the top
-        priority: 0,
+  Widget build(BuildContext context) {
+    bool showTitle = !ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
+    List<SideMenuItemDataTile> _items = [
+      buildDataTile(
         title: 'Home',
-        onTap: (index, _) {
-          print("Home");
-          page.changePage(index);
+        onTap: () {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(routes.homeScreen, (route) => false);
         },
-        icon: const Icon(Icons.home),
+        icon: Icons.home,
+        isSelected: true,
       ),
-      SideMenuItem(
-        priority: 1,
+      buildDataTile(
         title: 'Results',
-        onTap: (index, _) {
+        onTap: () {
           print("Results");
-          page.changePage(index);
         },
-        icon: const Icon(Icons.analytics_outlined),
+        icon: Icons.analytics_outlined,
       ),
-      SideMenuItem(
-        priority: 2,
+      buildDataTile(
         title: 'Weight Loss Tips',
-        onTap: (index, _) {
+        onTap: () {
           print("Test");
-          page.changePage(index);
         },
-        icon: const Icon(Icons.tips_and_updates),
+        icon: Icons.tips_and_updates,
       ),
     ];
+
+    return SideMenu(
+      builder: (data) => SideMenuData(
+        header: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: showTitle
+              ? Text(
+                  "Weight App",
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context)
+                        .textTheme
+                        .titleLarge!
+                        .color!
+                        .withOpacity(.85),
+                  ),
+                )
+              : null,
+        ),
+        items: _items,
+        footer: const _Footer(),
+      ),
+      backgroundColor: Theme.of(context).cardColor.withAlpha(100),
+      maxWidth: 200,
+      minWidth: 75,
+      hasResizer: false,
+      hasResizerToggle: false,
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SideMenu(
-      items: items,
-      controller: page,
-      collapseWidth: 800,
-      displayModeToggleDuration: const Duration(milliseconds: 200),
-      footer: const Padding(padding: EdgeInsets.all(8.0), child: _Footer()),
-      title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        child: Text(
-          "Weight App",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color:
-                Theme.of(context).textTheme.titleLarge!.color!.withOpacity(.85),
-          ),
-        ),
-      ),
-      style: SideMenuStyle(
-        openSideMenuWidth: 200,
-        itemHeight: 60,
-        itemOuterPadding: const EdgeInsets.symmetric(vertical: 5),
-        hoverColor: Colors.grey.withOpacity(.2),
-        selectedColor: Colors.grey.withOpacity(.6),
-        selectedTitleTextStyle: const TextStyle(color: Colors.white),
-        selectedIconColor: Colors.white,
-        unselectedIconColor: Colors.white70,
-        unselectedTitleTextStyle: const TextStyle(color: Colors.white70),
-        backgroundColor: Theme.of(context).cardColor.withAlpha(100),
-      ),
+  SideMenuItemDataTile buildDataTile({
+    required String title,
+    required IconData icon,
+    required VoidCallback onTap,
+    bool isSelected = false,
+  }) {
+    return SideMenuItemDataTile(
+      isSelected: isSelected,
+      onTap: onTap,
+      title: title,
+      icon: Icon(icon),
+      highlightSelectedColor: Colors.grey.withOpacity(.6),
+      hoverColor: Colors.grey.withOpacity(.2),
+      unSelectedColor: Colors.white.withOpacity(.9),
+      itemHeight: 50,
+      margin: const EdgeInsetsDirectional.only(bottom: 5),
+      hasSelectedLine: false,
     );
   }
 }
