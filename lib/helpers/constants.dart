@@ -17,7 +17,7 @@ enum Activity {
   moderateExercise(1.55, "Moderate exercise 3-5 times a week"),
   activeExercise(
       1.725, "Intense excersie 6-7 times a week, and or very active"),
-  athleticExercise(1.9, "You have an atheltic exercise/training regiment");
+  athleticExercise(1.9, "You have an athletic exercise/training regiment");
 
   final double points;
   final String text;
