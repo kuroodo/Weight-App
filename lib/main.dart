@@ -48,7 +48,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-
-// See how u can make the bar persist or something idk
-// Otherwise figure out how to fix it idk why it braking
