@@ -1,26 +1,30 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/helpers/simulator.dart' as simulator;
-import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
 import 'package:weight_app/models/weight_data.dart';
+import 'package:weight_app/providers/form_data_provider.dart';
 import 'package:weight_app/widgets/navigation/nav_drawer.dart';
 import 'package:weight_app/widgets/navigation/side_navigator.dart';
 import 'package:weight_app/widgets/result_screen/result_app_bar.dart';
 
-class ResultScreen extends StatefulWidget {
+class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({super.key});
 
   @override
-  State<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
+class _ResultScreenState extends ConsumerState<ResultScreen> {
+  late final FormData? _formData;
+  late final WeightData _weightData;
+  late final Activity _activity;
   List<ResultData>? _data;
 
   Future<List<ResultData>> _calculateData({
@@ -41,13 +45,38 @@ class _ResultScreenState extends State<ResultScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _formData = ref.read(formDataProvider);
+    if (_formData == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showNoDataAlert();
+      });
+      return;
+    }
+
+    // Note: Convert to records for Dart 3
+    double weight = _formData!.weightMeasurement == Measurement.imperial
+        ? converter.poundToKg(_formData!.weight)
+        : _formData!.weight;
+    double height = _formData!.heightMeasurement == Measurement.imperial
+        ? converter.inchToCm(_formData!.height)
+        : _formData!.height;
+
+    _weightData = WeightData(
+      age: _formData!.age.toDouble(),
+      weight: weight,
+      height: height,
+      isMale: _formData!.gender == Gender.male,
+    );
+    _activity = _formData!.activity;
+  }
+
+  @override
   Widget build(BuildContext context) {
     bool useMobile = Platform.isAndroid || Platform.isIOS;
 
-    CalcParams params =
-        ModalRoute.of(context)!.settings.arguments as CalcParams;
-    WeightData weightData = params.weightData;
-    Activity activity = params.activity;
+    if (_formData == null) return const SizedBox.shrink();
 
     return Scaffold(
       body: Row(
@@ -59,14 +88,14 @@ class _ResultScreenState extends State<ResultScreen> {
                 ResultAppBar(
                   height: 45,
                   onQuestionTapped: () => Navigator.of(context)
-                      .pushNamed(routes.resultInfoScreen, arguments: params),
+                      .pushNamed(routes.resultInfoScreen, arguments: _formData),
                 ),
                 Expanded(
                   child: FutureBuilder(
                     future: _calculateData(
-                      startingWeight: weightData,
-                      activity: activity,
-                      calorieIntake: params.calorieIntake,
+                      startingWeight: _weightData,
+                      activity: _activity,
+                      calorieIntake: _formData!.cals,
                     ),
                     builder: (context, snapshot) {
                       if (_data == null &&
@@ -80,7 +109,7 @@ class _ResultScreenState extends State<ResultScreen> {
 
                       return _ResultChart(
                         data: _data!,
-                        weightMeasurement: params.weightMeasurement,
+                        weightMeasurement: _formData!.weightMeasurement,
                       );
                     },
                   ),
@@ -91,6 +120,23 @@ class _ResultScreenState extends State<ResultScreen> {
         ],
       ),
       drawer: useMobile ? const NavDrawer() : null,
+    );
+  }
+
+  void showNoDataAlert() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: const Text("No data found. Please go back and try again."),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                Navigator.of(context).popAndPushNamed("home_screen"),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
     );
   }
 }

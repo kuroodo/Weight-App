@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
 
 class GenderDropButton extends StatefulWidget {
+  final Gender? initialValue;
   final Function(Gender) onChanged;
-  const GenderDropButton({super.key, required this.onChanged});
+  const GenderDropButton(
+      {super.key, required this.onChanged, this.initialValue});
 
   @override
   State<GenderDropButton> createState() => _GenderDropButtonState();
 }
 
 class _GenderDropButtonState extends State<GenderDropButton> {
-  Gender _dropdownValue = Gender.male;
+  late Gender _dropdownValue;
+  @override
+  void initState() {
+    super.initState();
+    _dropdownValue = widget.initialValue ?? Gender.male;
+  }
 
   @override
   Widget build(BuildContext context) {

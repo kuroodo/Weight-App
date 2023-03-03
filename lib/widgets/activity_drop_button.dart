@@ -3,15 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
 
 class ActivityDropButton extends StatefulWidget {
+  final Activity? initialValue;
   final Function(Activity) onChanged;
-  const ActivityDropButton({super.key, required this.onChanged});
+  const ActivityDropButton(
+      {super.key, required this.onChanged, this.initialValue});
 
   @override
   State<ActivityDropButton> createState() => _ActivityDropButtonState();
 }
 
 class _ActivityDropButtonState extends State<ActivityDropButton> {
-  Activity _dropdownValue = Activity.lightExercise;
+  late Activity _dropdownValue;
+  @override
+  void initState() {
+    super.initState();
+    _dropdownValue = widget.initialValue ?? Activity.lightExercise;
+  }
 
   @override
   Widget build(BuildContext context) {

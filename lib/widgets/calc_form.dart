@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weight_app/helpers/constants.dart';
-import 'package:weight_app/helpers/converter.dart' as converter;
-import 'package:weight_app/models/calc_params.dart';
-import 'package:weight_app/models/weight_data.dart';
+import 'package:weight_app/providers/form_data_provider.dart';
 import 'package:weight_app/widgets/activity_drop_button.dart';
 import 'package:weight_app/widgets/calc_form/styled_form_field.dart';
 import 'package:weight_app/widgets/gender_drop_button.dart';
@@ -10,15 +9,17 @@ import 'package:weight_app/widgets/measurement_drop_button.dart';
 
 const double _formWidth = 150;
 
-class CalcForm extends StatefulWidget {
+class CalcForm extends ConsumerStatefulWidget {
   const CalcForm({super.key});
 
   @override
-  State<CalcForm> createState() => _CalcFormState();
+  ConsumerState<CalcForm> createState() => _CalcFormState();
 }
 
-class _CalcFormState extends State<CalcForm> {
+class _CalcFormState extends ConsumerState<CalcForm> {
+  late final FormData? _formData;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   Measurement _weightMeasure = Measurement.imperial;
   Measurement _heightMeasure = Measurement.imperial;
   Activity _activity = Activity.lightExercise;
@@ -27,6 +28,24 @@ class _CalcFormState extends State<CalcForm> {
   double _height = 0;
   double _cals = 0;
   int _age = 0;
+
+  bool _showInitialValues = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _formData = ref.read(formDataProvider);
+    if (_formData == null) return;
+    _weightMeasure = _formData!.weightMeasurement;
+    _heightMeasure = _formData!.heightMeasurement;
+    _activity = _formData!.activity;
+    _gender = _formData!.gender;
+    _weight = _formData!.weight;
+    _height = _formData!.height;
+    _cals = _formData!.cals;
+    _age = _formData!.age;
+    _showInitialValues = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +61,7 @@ class _CalcFormState extends State<CalcForm> {
             children: [
               const _ConstrainedText(text: "Gender"),
               GenderDropButton(
+                initialValue: _gender,
                 onChanged: (gender) => _gender = gender,
               ),
             ],
@@ -51,6 +71,8 @@ class _CalcFormState extends State<CalcForm> {
           _FormRow(
             label: "Weight",
             keyName: "w",
+            initialFormValue: _showInitialValues ? _weight.toString() : null,
+            initialDropDownValue: _weightMeasure,
             isWeight: true,
             onSave: (w) => _weight = double.parse(w),
             onValidate: _validateDouble,
@@ -60,6 +82,8 @@ class _CalcFormState extends State<CalcForm> {
           _FormRow(
             label: "Height",
             keyName: "h",
+            initialFormValue: _showInitialValues ? _height.toString() : null,
+            initialDropDownValue: _heightMeasure,
             isWeight: false,
             onSave: (h) => _height = double.parse(h),
             onValidate: _validateDouble,
@@ -76,6 +100,7 @@ class _CalcFormState extends State<CalcForm> {
                   constraints: const BoxConstraints(maxWidth: _formWidth),
                   child: StyledFormField(
                     keyName: "a",
+                    initialValue: _showInitialValues ? _age.toString() : null,
                     keyBoardType: TextInputType.number,
                     onSave: (age) => _age = int.parse(age),
                     onValidate: _validateInt,
@@ -94,9 +119,10 @@ class _CalcFormState extends State<CalcForm> {
                   constraints: const BoxConstraints(maxWidth: _formWidth),
                   child: StyledFormField(
                     keyName: "c",
+                    initialValue: _showInitialValues ? _cals.toString() : null,
                     keyBoardType: TextInputType.number,
                     onSave: (cals) => _cals = double.parse(cals),
-                    onValidate: _validateInt,
+                    onValidate: _validateDouble,
                   ),
                 ),
               ),
@@ -112,6 +138,7 @@ class _CalcFormState extends State<CalcForm> {
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 325),
                   child: ActivityDropButton(
+                    initialValue: _activity,
                     onChanged: (activity) => _activity = activity,
                   ),
                 ),
@@ -146,27 +173,18 @@ class _CalcFormState extends State<CalcForm> {
   }
 
   void _onSubmit() {
-    final double weight = _weightMeasure == Measurement.imperial
-        ? converter.poundToKg(_weight)
-        : _weight;
-    final double height = _heightMeasure == Measurement.imperial
-        ? converter.inchToCm(_height)
-        : _height;
-    Navigator.of(context).popAndPushNamed(
-      "result_screen",
-      arguments: CalcParams(
-        weightData: WeightData(
-          age: _age.toDouble(),
-          weight: weight,
-          height: height,
-          isMale: _gender == Gender.male,
-        ),
-        activity: _activity,
-        calorieIntake: _cals,
-        heightMeasurement: _heightMeasure,
-        weightMeasurement: _weightMeasure,
-      ),
+    ref.read(formDataProvider.notifier).state = FormData(
+      weightMeasurement: _weightMeasure,
+      heightMeasurement: _heightMeasure,
+      activity: _activity,
+      age: _age,
+      cals: _cals,
+      gender: _gender,
+      height: _height,
+      weight: _weight,
     );
+
+    Navigator.of(context).pushNamed("result_screen");
   }
 
   String? _validateDouble(val) {
@@ -187,6 +205,8 @@ class _CalcFormState extends State<CalcForm> {
 class _FormRow extends StatelessWidget {
   final String label;
   final String keyName;
+  final String? initialFormValue;
+  final Measurement? initialDropDownValue;
   final bool isWeight;
   final Function(Measurement) onDropDownChange;
   final Function(String) onSave;
@@ -198,6 +218,8 @@ class _FormRow extends StatelessWidget {
     required this.onSave,
     required this.onValidate,
     required this.onDropDownChange,
+    this.initialFormValue,
+    this.initialDropDownValue,
   });
 
   @override
@@ -212,6 +234,7 @@ class _FormRow extends StatelessWidget {
             child: StyledFormField(
               keyName: keyName,
               keyBoardType: TextInputType.number,
+              initialValue: initialFormValue,
               onSave: onSave,
               onValidate: onValidate,
             ),
@@ -223,6 +246,7 @@ class _FormRow extends StatelessWidget {
           child: MeasurementDropButton(
             onChanged: onDropDownChange,
             isWeight: isWeight,
+            initialValue: initialDropDownValue,
           ),
         ),
       ],

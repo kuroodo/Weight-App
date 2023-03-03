@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:weight_app/helpers/constants.dart';
 
 class MeasurementDropButton extends StatefulWidget {
+  final Measurement? initialValue;
   final bool isWeight;
   final Function(Measurement) onChanged;
   const MeasurementDropButton({
     super.key,
     required this.isWeight,
     required this.onChanged,
+    this.initialValue,
   });
 
   @override
@@ -16,7 +18,12 @@ class MeasurementDropButton extends StatefulWidget {
 }
 
 class _MeasurementDropButtonState extends State<MeasurementDropButton> {
-  Measurement _dropdownValue = Measurement.imperial;
+  late Measurement _dropdownValue;
+  @override
+  void initState() {
+    super.initState();
+    _dropdownValue = widget.initialValue ?? Measurement.imperial;
+  }
 
   @override
   Widget build(BuildContext context) {
