@@ -1,23 +1,37 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:weight_app/widgets/calc_form.dart';
-import 'package:weight_app/widgets/nav_drawer.dart';
+import 'package:weight_app/widgets/navigation/nav_drawer.dart';
+import 'package:weight_app/widgets/navigation/side_navigator.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool useMobile = Platform.isAndroid || Platform.isIOS;
     return Scaffold(
-      appBar: AppBar(title: const Text("Home"), centerTitle: true),
-      body: const SafeArea(
-        child: Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12),
-            child: SingleChildScrollView(child: CalcForm()),
-          ),
+      appBar: useMobile
+          ? AppBar(title: const Text("Home"), centerTitle: true)
+          : null,
+      body: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (!useMobile) const SideNavigator(),
+            const Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(14),
+                child: SingleChildScrollView(
+                  child: CalcForm(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
-      drawer: const NavDrawer(),
+      drawer: useMobile ? const NavDrawer() : null,
     );
   }
 }

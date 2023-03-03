@@ -38,7 +38,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   data_table_2: ^2.3.7
-  dropdown_button2: ^1.8.8
+  dropdown_button2: ^2.0.0
+  responsive_framework: ^0.2.0
+  desktop_window: ^0.4.0
+  flutter_side_menu: ^0.3.0
 
 dev_dependencies:
   flutter_test:
