@@ -107,11 +107,12 @@ class _ResultChart extends StatelessWidget {
   Widget build(BuildContext context) {
     const TextStyle headerStyle = TextStyle(fontSize: 13);
     const TextStyle dataStyle = TextStyle(fontSize: 15);
-    const double rowHeight = 62;
+    const double columnHeight = 62;
     return Column(
       children: [
         SizedBox(
-          height: rowHeight,
+          height: columnHeight,
+          // Multi-row hack needed to keep Week text to the left while keeping everything else centered
           child: Row(
             children: [
               Expanded(
@@ -183,9 +184,10 @@ class _ResultChart extends StatelessWidget {
               return Container(
                 color: index.isEven ? Colors.grey.withOpacity(0.3) : null,
                 child: SizedBox(
-                  height: rowHeight,
+                  height: columnHeight,
                   child: Row(
                     children: [
+                      // Once again multi-row hack needed to keep Week text to the left while keeping everything else centered
                       Expanded(
                         flex: 2,
                         child: Row(
