@@ -23,59 +23,68 @@ class ResultInfoScreen extends ConsumerWidget {
       ),
       body: formData == null
           ? const NoDataWidget()
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Container(
-                        padding: textPadding,
-                        color: Colors.blueGrey.withOpacity(.4),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_getDataText(formData), style: textStyle),
-                            const SizedBox(height: 5),
-                            Text(_getBMIText(formData), style: textStyle),
-                          ],
+          : WillPopScope(
+              onWillPop: () async {
+                // Make the current route the result screen when pressing back
+                Navigation.overrideCurrentRoute(resultScreen);
+                Navigator.pop(context);
+                return Future.value(false);
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Container(
+                          padding: textPadding,
+                          color: Colors.blueGrey.withOpacity(.4),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_getDataText(formData), style: textStyle),
+                              const SizedBox(height: 5),
+                              Text(_getBMIText(formData), style: textStyle),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        padding: textPadding,
-                        color: Colors.blueGrey.withOpacity(.15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_getBMIRangeText(), style: textStyle),
-                            const SizedBox(height: 5),
-                            Text(_getIdealWeightText(formData),
-                                style: textStyle),
-                            const SizedBox(height: 25),
-                            Text(_getIdealWeightInfoText(), style: textStyle)
-                          ],
+                        Container(
+                          padding: textPadding,
+                          color: Colors.blueGrey.withOpacity(.15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_getBMIRangeText(), style: textStyle),
+                              const SizedBox(height: 5),
+                              Text(_getIdealWeightText(formData),
+                                  style: textStyle),
+                              const SizedBox(height: 25),
+                              Text(_getIdealWeightInfoText(), style: textStyle)
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(color: Colors.grey[600], thickness: 2, height: 0),
-                      Container(
-                        padding: textPadding,
-                        color: Colors.grey.withOpacity(.1),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(_getResultInfoText(), style: textStyle),
-                            const SizedBox(height: 5),
-                            Text(
-                              _getMoreInfoText(),
-                              style: textStyle,
-                            ),
-                          ],
+                        Divider(
+                            color: Colors.grey[600], thickness: 2, height: 0),
+                        Container(
+                          padding: textPadding,
+                          color: Colors.grey.withOpacity(.1),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(_getResultInfoText(), style: textStyle),
+                              const SizedBox(height: 5),
+                              Text(
+                                _getMoreInfoText(),
+                                style: textStyle,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
     );
   }

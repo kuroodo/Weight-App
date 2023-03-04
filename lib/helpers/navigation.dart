@@ -12,6 +12,10 @@ class Navigation {
   static bool get isResultScreen => _currentRoute == resultScreen;
   static bool get isResultInfoScreen => _currentRoute == resultInfoScreen;
 
+  static void overrideCurrentRoute(String route) {
+    _currentRoute = route;
+  }
+
   static void popAndNavigateTo({
     required String route,
     required BuildContext context,
