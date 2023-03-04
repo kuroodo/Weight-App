@@ -8,6 +8,9 @@ class Navigation {
   static String _currentRoute = homeScreen;
 
   static String get currentRoute => _currentRoute;
+  static bool get isHomeScreen => _currentRoute == homeScreen;
+  static bool get isResultScreen => _currentRoute == resultScreen;
+  static bool get isResultInfoScreen => _currentRoute == resultInfoScreen;
 
   static void popAndNavigateTo({
     required String route,

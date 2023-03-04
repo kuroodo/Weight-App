@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:weight_app/helpers/navigation.dart';
+import 'package:weight_app/providers/form_data_provider.dart';
 
-class SideNavigator extends StatelessWidget {
+class SideNavigator extends ConsumerWidget {
   const SideNavigator({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool showTitle = !ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
+    bool isResultsDisabled = ref.read(formDataProvider) == null;
+
     List<SideMenuItemDataTile> items = [
       buildDataTile(
         title: 'Home',
-        onTap: () {
-          Navigation.popAndNavigateTo(route: homeScreen, context: context);
-        },
+        onTap: Navigation.isHomeScreen
+            ? () {}
+            : () => Navigation.popAndNavigateTo(
+                route: homeScreen, context: context),
         icon: Icons.home,
         isSelected: Navigation.currentRoute == homeScreen,
       ),
       buildDataTile(
-          title: 'Results',
-          onTap: () {
-            print("Results");
-          },
-          icon: Icons.analytics_outlined,
-          isSelected: Navigation.currentRoute == resultScreen),
+        title: 'Results',
+        onTap: isResultsDisabled
+            ? () => ScaffoldMessenger.of(context).showSnackBar(buildErrorBar())
+            : Navigation.isResultScreen
+                ? () {}
+                : () => Navigation.popAndNavigateTo(
+                    route: resultScreen, context: context),
+        icon: Icons.analytics_outlined,
+        isSelected: Navigation.currentRoute == resultScreen,
+        isDisabled: isResultsDisabled,
+      ),
       buildDataTile(
         title: 'Weight Loss Tips',
         onTap: () {
@@ -70,6 +80,7 @@ class SideNavigator extends StatelessWidget {
     required IconData icon,
     required VoidCallback onTap,
     bool isSelected = false,
+    bool isDisabled = false,
   }) {
     return SideMenuItemDataTile(
       isSelected: isSelected,
@@ -77,11 +88,21 @@ class SideNavigator extends StatelessWidget {
       title: title,
       icon: Icon(icon),
       highlightSelectedColor: Colors.grey.withOpacity(.6),
-      hoverColor: Colors.grey.withOpacity(.2),
-      unSelectedColor: Colors.white.withOpacity(.9),
+      hoverColor: Colors.grey.withOpacity(isDisabled ? 0 : .2),
+      unSelectedColor: Colors.white.withOpacity(isDisabled ? .15 : .9),
       itemHeight: 50,
       margin: const EdgeInsetsDirectional.only(bottom: 5),
       hasSelectedLine: false,
+    );
+  }
+
+  SnackBar buildErrorBar() {
+    return const SnackBar(
+      content: Text(
+        "Please fill out the form first!",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Colors.redAccent,
     );
   }
 }
