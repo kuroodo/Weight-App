@@ -23,7 +23,6 @@ class ResultScreen extends ConsumerStatefulWidget {
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
   late final FormData? _formData;
-  late final WeightData _weightData;
   late final Activity _activity;
   List<ResultData>? _data;
 
@@ -55,20 +54,6 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       return;
     }
 
-    // Note: Convert to records for Dart 3
-    double weight = _formData!.weightMeasurement == Measurement.imperial
-        ? converter.poundToKg(_formData!.weight)
-        : _formData!.weight;
-    double height = _formData!.heightMeasurement == Measurement.imperial
-        ? converter.inchToCm(_formData!.height)
-        : _formData!.height;
-
-    _weightData = WeightData(
-      age: _formData!.age.toDouble(),
-      weight: weight,
-      height: height,
-      isMale: _formData!.gender == Gender.male,
-    );
     _activity = _formData!.activity;
   }
 
@@ -90,13 +75,12 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
                   onQuestionTapped: () => Navigation.navigateTo(
                     route: resultInfoScreen,
                     context: context,
-                    args: _formData,
                   ),
                 ),
                 Expanded(
                   child: FutureBuilder(
                     future: _calculateData(
-                      startingWeight: _weightData,
+                      startingWeight: _formData!.weightData,
                       activity: _activity,
                       calorieIntake: _formData!.cals,
                     ),
@@ -135,7 +119,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigation.popAndNavigateTo(
-                route: homeScreen, context: context),
+              route: homeScreen,
+              context: context,
+            ),
             child: const Text("OK"),
           ),
         ],
