@@ -4,6 +4,7 @@ import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:weight_app/helpers/navigation.dart';
 import 'package:weight_app/providers/form_data_provider.dart';
+import 'package:weight_app/widgets/navigation/footer.dart';
 
 class SideNavigator extends ConsumerWidget {
   const SideNavigator({super.key});
@@ -65,7 +66,7 @@ class SideNavigator extends ConsumerWidget {
               : null,
         ),
         items: items,
-        footer: const _Footer(),
+        footer: const Footer(),
       ),
       backgroundColor: Theme.of(context).cardColor.withAlpha(100),
       maxWidth: 200,
@@ -103,42 +104,6 @@ class SideNavigator extends ConsumerWidget {
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
       ),
       backgroundColor: Colors.redAccent,
-    );
-  }
-}
-
-class _Footer extends StatelessWidget {
-  const _Footer();
-
-  @override
-  Widget build(BuildContext context) {
-    TextStyle style = TextStyle(
-        color: Theme.of(context).textTheme.titleLarge!.color!.withOpacity(.75));
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "Weight App",
-          style: style,
-          textAlign: TextAlign.center,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Text(
-            "https://github.com/kuroodo/Weight-App",
-            style: style,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            "MIT License",
-            style: style,
-          ),
-        ),
-      ],
     );
   }
 }
