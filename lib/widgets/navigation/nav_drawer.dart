@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:weight_app/helpers/routes.dart' as routes;
+import 'package:weight_app/helpers/navigation.dart';
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({super.key});
@@ -40,8 +40,8 @@ class NavDrawer extends StatelessWidget {
           _NavButton(
             icon: Icons.home,
             text: "Home",
-            onPressed: () => Navigator.of(context)
-                .pushNamedAndRemoveUntil(routes.homeScreen, (route) => false),
+            onPressed: () => Navigation.popAndNavigateTo(
+                route: homeScreen, context: context),
           ),
           _NavButton(
             icon: Icons.analytics_outlined,

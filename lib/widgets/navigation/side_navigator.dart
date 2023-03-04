@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:weight_app/helpers/routes.dart' as routes;
+import 'package:weight_app/helpers/navigation.dart';
 
 class SideNavigator extends StatelessWidget {
   const SideNavigator({super.key});
@@ -13,25 +13,25 @@ class SideNavigator extends StatelessWidget {
       buildDataTile(
         title: 'Home',
         onTap: () {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(routes.homeScreen, (route) => false);
+          Navigation.popAndNavigateTo(route: homeScreen, context: context);
         },
         icon: Icons.home,
-        isSelected: true,
+        isSelected: Navigation.currentRoute == homeScreen,
       ),
       buildDataTile(
-        title: 'Results',
-        onTap: () {
-          print("Results");
-        },
-        icon: Icons.analytics_outlined,
-      ),
+          title: 'Results',
+          onTap: () {
+            print("Results");
+          },
+          icon: Icons.analytics_outlined,
+          isSelected: Navigation.currentRoute == resultScreen),
       buildDataTile(
         title: 'Weight Loss Tips',
         onTap: () {
           print("Test");
         },
         icon: Icons.tips_and_updates,
+        isSelected: false,
       ),
     ];
 

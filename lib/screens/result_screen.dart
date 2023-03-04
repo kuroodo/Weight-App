@@ -5,11 +5,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/helpers/converter.dart' as converter;
-import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/helpers/simulator.dart' as simulator;
 import 'package:weight_app/models/result_data.dart';
 import 'package:weight_app/models/weight_data.dart';
 import 'package:weight_app/providers/form_data_provider.dart';
+import 'package:weight_app/helpers/navigation.dart';
 import 'package:weight_app/widgets/navigation/nav_drawer.dart';
 import 'package:weight_app/widgets/navigation/side_navigator.dart';
 import 'package:weight_app/widgets/result_screen/result_app_bar.dart';
@@ -87,8 +87,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
               children: [
                 ResultAppBar(
                   height: 45,
-                  onQuestionTapped: () => Navigator.of(context)
-                      .pushNamed(routes.resultInfoScreen, arguments: _formData),
+                  onQuestionTapped: () => Navigation.navigateTo(
+                    route: resultInfoScreen,
+                    context: context,
+                    args: _formData,
+                  ),
                 ),
                 Expanded(
                   child: FutureBuilder(
@@ -131,8 +134,8 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         content: const Text("No data found. Please go back and try again."),
         actions: [
           TextButton(
-            onPressed: () =>
-                Navigator.of(context).popAndPushNamed("home_screen"),
+            onPressed: () => Navigation.popAndNavigateTo(
+                route: homeScreen, context: context),
             child: const Text("OK"),
           ),
         ],

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:weight_app/helpers/routes.dart' as routes;
+import 'package:weight_app/helpers/navigation.dart' as routes;
 import 'package:weight_app/screens/home_screen.dart';
 import 'package:weight_app/screens/result_info_screen.dart';
 import 'package:weight_app/screens/result_screen.dart';

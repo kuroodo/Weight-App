@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/providers/form_data_provider.dart';
+import 'package:weight_app/helpers/navigation.dart';
 import 'package:weight_app/widgets/activity_drop_button.dart';
 import 'package:weight_app/widgets/calc_form/styled_form_field.dart';
 import 'package:weight_app/widgets/gender_drop_button.dart';
@@ -184,7 +185,7 @@ class _CalcFormState extends ConsumerState<CalcForm> {
       weight: _weight,
     );
 
-    Navigator.of(context).pushNamed("result_screen");
+    Navigation.popAndNavigateTo(route: resultScreen, context: context);
   }
 
   String? _validateDouble(val) {
