@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Footer extends StatelessWidget {
   const Footer({super.key});
@@ -18,10 +20,20 @@ class Footer extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Text(
-            "https://github.com/kuroodo/Weight-App",
+          child: Linkify(
+            text: "https://github.com/kuroodo/Weight-App",
             style: style,
             textAlign: TextAlign.center,
+            onOpen: (link) async {
+              if (await canLaunchUrl(Uri.parse(link.url))) {
+                await launchUrl(
+                  Uri.parse(link.url),
+                  mode: LaunchMode.externalApplication,
+                );
+              } else {
+                throw 'Could not launch $link';
+              }
+            },
           ),
         ),
         Padding(
