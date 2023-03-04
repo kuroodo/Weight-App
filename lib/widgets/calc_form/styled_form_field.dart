@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class StyledFormField extends StatelessWidget {
   final String keyName;
+  final String? initialValue;
   final TextInputType? keyBoardType;
   final void Function(String) onSave;
 
@@ -13,6 +14,7 @@ class StyledFormField extends StatelessWidget {
     required this.onSave,
     this.onValidate,
     this.keyBoardType,
+    this.initialValue,
   }) : super(key: key);
 
   @override
@@ -21,6 +23,7 @@ class StyledFormField extends StatelessWidget {
       decoration: BoxDecoration(color: Colors.grey[350]),
       child: TextFormField(
         key: ValueKey(keyName),
+        initialValue: initialValue,
         autocorrect: false,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.black, fontSize: 20),

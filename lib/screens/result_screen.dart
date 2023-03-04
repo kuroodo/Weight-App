@@ -1,54 +1,53 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/helpers/converter.dart' as converter;
-import 'package:weight_app/helpers/routes.dart' as routes;
 import 'package:weight_app/helpers/simulator.dart' as simulator;
-import 'package:weight_app/models/calc_params.dart';
 import 'package:weight_app/models/result_data.dart';
-import 'package:weight_app/models/weight_data.dart';
+import 'package:weight_app/providers/form_data_provider.dart';
+import 'package:weight_app/helpers/navigation.dart';
 import 'package:weight_app/widgets/navigation/nav_drawer.dart';
 import 'package:weight_app/widgets/navigation/side_navigator.dart';
 import 'package:weight_app/widgets/result_screen/result_app_bar.dart';
 
-class ResultScreen extends StatefulWidget {
+class ResultScreen extends ConsumerStatefulWidget {
   const ResultScreen({super.key});
 
   @override
-  State<ResultScreen> createState() => _ResultScreenState();
+  ConsumerState<ResultScreen> createState() => _ResultScreenState();
 }
 
-class _ResultScreenState extends State<ResultScreen> {
-  List<ResultData>? _data;
+class _ResultScreenState extends ConsumerState<ResultScreen> {
+  late final FormData? _formData;
+  late final List<ResultData> _data;
 
-  Future<List<ResultData>> _calculateData({
-    required WeightData startingWeight,
-    required Activity activity,
-    required double calorieIntake,
-  }) {
-    if (_data != null) {
-      return Future.value(_data);
+  @override
+  void initState() {
+    super.initState();
+    _formData = ref.read(formDataProvider);
+    if (_formData == null) {
+      // Show dialog after screen is built
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showNoDataAlert();
+      });
+      return;
     }
-    return Future.value(
-      simulator.simulateTwoYears(
-        startingWeight: startingWeight,
-        activity: activity,
-        calorieIntake: calorieIntake,
-      ),
+
+    _data = simulator.simulateTwoYears(
+      startingWeight: _formData!.weightData,
+      activity: _formData!.activity,
+      calorieIntake: _formData!.cals,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_formData == null) return const SizedBox.shrink();
+
     bool useMobile = Platform.isAndroid || Platform.isIOS;
-
-    CalcParams params =
-        ModalRoute.of(context)!.settings.arguments as CalcParams;
-    WeightData weightData = params.weightData;
-    Activity activity = params.activity;
-
     return Scaffold(
       body: Row(
         children: [
@@ -56,33 +55,11 @@ class _ResultScreenState extends State<ResultScreen> {
           Expanded(
             child: Column(
               children: [
-                ResultAppBar(
-                  height: 45,
-                  onQuestionTapped: () => Navigator.of(context)
-                      .pushNamed(routes.resultInfoScreen, arguments: params),
-                ),
+                ResultAppBar(height: 45, onQuestionTapped: _onQuestionTapped),
                 Expanded(
-                  child: FutureBuilder(
-                    future: _calculateData(
-                      startingWeight: weightData,
-                      activity: activity,
-                      calorieIntake: params.calorieIntake,
-                    ),
-                    builder: (context, snapshot) {
-                      if (_data == null &&
-                          snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (_data == null && snapshot.hasData) {
-                        _data = snapshot.data;
-                      }
-
-                      return _ResultChart(
-                        data: _data!,
-                        weightMeasurement: params.weightMeasurement,
-                      );
-                    },
+                  child: _ResultChart(
+                    data: _data,
+                    weightMeasurement: _formData!.weightMeasurement,
                   ),
                 ),
               ],
@@ -91,6 +68,32 @@ class _ResultScreenState extends State<ResultScreen> {
         ],
       ),
       drawer: useMobile ? const NavDrawer() : null,
+    );
+  }
+
+  void _onQuestionTapped() {
+    Navigation.navigateTo(
+      route: resultInfoScreen,
+      context: context,
+    );
+  }
+
+  void _showNoDataAlert() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: const Text("No data found. Please go back and try again."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigation.popAndNavigateTo(
+              route: homeScreen,
+              context: context,
+            ),
+            child: const Text("OK"),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_side_menu/flutter_side_menu.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:weight_app/helpers/routes.dart' as routes;
+import 'package:weight_app/helpers/navigation.dart';
+import 'package:weight_app/providers/form_data_provider.dart';
+import 'package:weight_app/widgets/navigation/footer.dart';
 
-class SideNavigator extends StatelessWidget {
+class SideNavigator extends ConsumerWidget {
   const SideNavigator({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     bool showTitle = !ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
+    bool isResultsDisabled = ref.read(formDataProvider) == null;
+
     List<SideMenuItemDataTile> items = [
       buildDataTile(
         title: 'Home',
-        onTap: () {
-          Navigator.of(context)
-              .pushNamedAndRemoveUntil(routes.homeScreen, (route) => false);
-        },
+        onTap: Navigation.isHomeScreen
+            ? () {}
+            : () => Navigation.popAndNavigateTo(
+                route: homeScreen, context: context),
         icon: Icons.home,
-        isSelected: true,
+        isSelected: Navigation.currentRoute == homeScreen,
       ),
       buildDataTile(
         title: 'Results',
-        onTap: () {
-          print("Results");
-        },
+        onTap: isResultsDisabled
+            ? () => ScaffoldMessenger.of(context).showSnackBar(buildErrorBar())
+            : Navigation.isResultScreen
+                ? () {}
+                : () => Navigation.popAndNavigateTo(
+                    route: resultScreen, context: context),
         icon: Icons.analytics_outlined,
+        isSelected: Navigation.currentRoute == resultScreen,
+        isDisabled: isResultsDisabled,
       ),
       buildDataTile(
         title: 'Weight Loss Tips',
@@ -32,6 +42,7 @@ class SideNavigator extends StatelessWidget {
           print("Test");
         },
         icon: Icons.tips_and_updates,
+        isSelected: false,
       ),
     ];
 
@@ -55,7 +66,7 @@ class SideNavigator extends StatelessWidget {
               : null,
         ),
         items: items,
-        footer: const _Footer(),
+        footer: const Footer(),
       ),
       backgroundColor: Theme.of(context).cardColor.withAlpha(100),
       maxWidth: 200,
@@ -70,6 +81,7 @@ class SideNavigator extends StatelessWidget {
     required IconData icon,
     required VoidCallback onTap,
     bool isSelected = false,
+    bool isDisabled = false,
   }) {
     return SideMenuItemDataTile(
       isSelected: isSelected,
@@ -77,47 +89,21 @@ class SideNavigator extends StatelessWidget {
       title: title,
       icon: Icon(icon),
       highlightSelectedColor: Colors.grey.withOpacity(.6),
-      hoverColor: Colors.grey.withOpacity(.2),
-      unSelectedColor: Colors.white.withOpacity(.9),
+      hoverColor: Colors.grey.withOpacity(isDisabled ? 0 : .2),
+      unSelectedColor: Colors.white.withOpacity(isDisabled ? .15 : .9),
       itemHeight: 50,
       margin: const EdgeInsetsDirectional.only(bottom: 5),
       hasSelectedLine: false,
     );
   }
-}
 
-class _Footer extends StatelessWidget {
-  const _Footer();
-
-  @override
-  Widget build(BuildContext context) {
-    TextStyle style = TextStyle(
-        color: Theme.of(context).textTheme.titleLarge!.color!.withOpacity(.75));
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text(
-          "Weight App",
-          style: style,
-          textAlign: TextAlign.center,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0),
-          child: Text(
-            "https://github.com/kuroodo/Weight-App",
-            style: style,
-            textAlign: TextAlign.center,
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(
-            "MIT License",
-            style: style,
-          ),
-        ),
-      ],
+  SnackBar buildErrorBar() {
+    return const SnackBar(
+      content: Text(
+        "Please fill out the form first!",
+        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      ),
+      backgroundColor: Colors.redAccent,
     );
   }
 }
