@@ -7,7 +7,6 @@ import 'package:weight_app/helpers/constants.dart';
 import 'package:weight_app/helpers/converter.dart' as converter;
 import 'package:weight_app/helpers/simulator.dart' as simulator;
 import 'package:weight_app/models/result_data.dart';
-import 'package:weight_app/models/weight_data.dart';
 import 'package:weight_app/providers/form_data_provider.dart';
 import 'package:weight_app/helpers/navigation.dart';
 import 'package:weight_app/widgets/navigation/nav_drawer.dart';
@@ -30,8 +29,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     super.initState();
     _formData = ref.read(formDataProvider);
     if (_formData == null) {
+      // Show dialog after screen is built
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        showNoDataAlert();
+        _showNoDataAlert();
       });
       return;
     }
@@ -45,10 +45,9 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool useMobile = Platform.isAndroid || Platform.isIOS;
-
     if (_formData == null) return const SizedBox.shrink();
 
+    bool useMobile = Platform.isAndroid || Platform.isIOS;
     return Scaffold(
       body: Row(
         children: [
@@ -56,7 +55,7 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           Expanded(
             child: Column(
               children: [
-                ResultAppBar(height: 45, onQuestionTapped: onQuestionTapped),
+                ResultAppBar(height: 45, onQuestionTapped: _onQuestionTapped),
                 Expanded(
                   child: _ResultChart(
                     data: _data,
@@ -72,14 +71,14 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
     );
   }
 
-  void onQuestionTapped() {
+  void _onQuestionTapped() {
     Navigation.navigateTo(
       route: resultInfoScreen,
       context: context,
     );
   }
 
-  void showNoDataAlert() {
+  void _showNoDataAlert() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
