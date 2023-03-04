@@ -23,25 +23,7 @@ class ResultScreen extends ConsumerStatefulWidget {
 
 class _ResultScreenState extends ConsumerState<ResultScreen> {
   late final FormData? _formData;
-  late final Activity _activity;
-  List<ResultData>? _data;
-
-  Future<List<ResultData>> _calculateData({
-    required WeightData startingWeight,
-    required Activity activity,
-    required double calorieIntake,
-  }) {
-    if (_data != null) {
-      return Future.value(_data);
-    }
-    return Future.value(
-      simulator.simulateTwoYears(
-        startingWeight: startingWeight,
-        activity: activity,
-        calorieIntake: calorieIntake,
-      ),
-    );
-  }
+  late final List<ResultData> _data;
 
   @override
   void initState() {
@@ -54,7 +36,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
       return;
     }
 
-    _activity = _formData!.activity;
+    _data = simulator.simulateTwoYears(
+      startingWeight: _formData!.weightData,
+      activity: _formData!.activity,
+      calorieIntake: _formData!.cals,
+    );
   }
 
   @override
@@ -70,35 +56,11 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
           Expanded(
             child: Column(
               children: [
-                ResultAppBar(
-                  height: 45,
-                  onQuestionTapped: () => Navigation.navigateTo(
-                    route: resultInfoScreen,
-                    context: context,
-                  ),
-                ),
+                ResultAppBar(height: 45, onQuestionTapped: onQuestionTapped),
                 Expanded(
-                  child: FutureBuilder(
-                    future: _calculateData(
-                      startingWeight: _formData!.weightData,
-                      activity: _activity,
-                      calorieIntake: _formData!.cals,
-                    ),
-                    builder: (context, snapshot) {
-                      if (_data == null &&
-                          snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (_data == null && snapshot.hasData) {
-                        _data = snapshot.data;
-                      }
-
-                      return _ResultChart(
-                        data: _data!,
-                        weightMeasurement: _formData!.weightMeasurement,
-                      );
-                    },
+                  child: _ResultChart(
+                    data: _data,
+                    weightMeasurement: _formData!.weightMeasurement,
                   ),
                 ),
               ],
@@ -107,6 +69,13 @@ class _ResultScreenState extends ConsumerState<ResultScreen> {
         ],
       ),
       drawer: useMobile ? const NavDrawer() : null,
+    );
+  }
+
+  void onQuestionTapped() {
+    Navigation.navigateTo(
+      route: resultInfoScreen,
+      context: context,
     );
   }
 
