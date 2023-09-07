@@ -1,9 +1,7 @@
-Flutter project to help aid in tracking weight loss, and understanding weight loss.
+Since Github has decided that they will be forcing 2FA onto accounts and locking people out of them if they don't set it up, I have moved my repositories to GitLab.
 
-This project uses the Mifflin-St Jeor equation to calculate BMR
+Microsoft has ruined Github and what it stood for.
 
-Project is still a WIP
+I highly recommend GitLab to other users, and the repository migration process is quick and straightforward.
 
-# Requirements
-
-Flutter 3.3.4+
+[View this repository via GitLab](https://gitlab.com/public-projects203535/Weight-App)
